@@ -54,4 +54,14 @@ public class TopicQueueModel {
     public void setCurrentOffset(Integer currentOffset) {
         this.currentOffset = currentOffset;
     }
+
+    @Override
+    public String toString() {
+        return "TopicQueueModel{" +
+                "id=" + id +
+                ", minOffset=" + minOffset +
+                ", maxOffset=" + maxOffset +
+                ", currentOffset=" + currentOffset +
+                '}';
+    }
 }

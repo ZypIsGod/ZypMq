@@ -1,7 +1,7 @@
 [
   {
     "topic":"order_topic",
-    "queueList": [
+    "topicQueueList": [
       {
         "id": 1,
         "minOffset": 1111,
