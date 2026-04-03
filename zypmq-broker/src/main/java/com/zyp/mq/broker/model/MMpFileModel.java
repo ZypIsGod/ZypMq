@@ -2,6 +2,7 @@ package com.zyp.mq.broker.model;
 
 import com.zyp.mq.broker.cache.CommonCache;
 import com.zyp.mq.broker.constants.BrokerConstants;
+import com.zyp.mq.broker.utils.CommitLogFilenameUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -46,7 +47,7 @@ public class MMpFileModel {
         String fileName = null;
         if (diff == 0) {
             //写满了
-            fileName = this.createNewCommitLogFile();
+            fileName = this.createNewCommitLogFile(topicName,fileName);
 
         } else if (diff > 0) {
             fileName = commitLogModel.getFileName();
@@ -56,9 +57,10 @@ public class MMpFileModel {
         return bathMqHome + brokerPath + topicName + "/" + fileName;
     }
 
-    private String createNewCommitLogFile() {
-
-        return null;
+    private String createNewCommitLogFile(String topicName,String oldFileName) {
+        String bathMqHome = CommonCache.globalProperties.getZypMqHome();
+        String brokerPath = BrokerConstants.BROKER_PATH;
+        return bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
     }
 
     public byte[] readContent(int readOffset, int size) {
