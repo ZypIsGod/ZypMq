@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class BrokerStartUp  {
 
-    private GlobalPropertiesLoader globalPropertiesLoader;
-    private TopicInfoLoader topicInfoLoader;
+    private static GlobalPropertiesLoader globalPropertiesLoader;
+    private static TopicInfoLoader topicInfoLoader;
 
-    private MessageAppendHandler messageAppendHandler;
+    private static MessageAppendHandler messageAppendHandler;
 
-    private void initProperties() throws IOException {
+    private static void initProperties() throws IOException {
         // 初始化配置文件
         globalPropertiesLoader = new GlobalPropertiesLoader();
         globalPropertiesLoader.loadProperties();
@@ -40,7 +40,13 @@ public class BrokerStartUp  {
 
     }
     public static void main(String[] args) throws IOException {
+        initProperties();
         BrokerStartUp brokerStartUp = new BrokerStartUp();
         brokerStartUp.initProperties();
+
+        messageAppendHandler.appendMsg("order_cancel_topic", "hello zyp111");
+
+        String s = messageAppendHandler.readMsg("order_cancel_topic");
+        System.out.println(s);
     }
 }

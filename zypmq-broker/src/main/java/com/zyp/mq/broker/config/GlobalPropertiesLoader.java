@@ -15,7 +15,7 @@ public class GlobalPropertiesLoader {
     public void loadProperties() {
         // 这里可以从配置文件、环境变量等多种来源加载全局配置
         this.globalProperties = new GlobalProperties();
-        String property = System.getProperty(BrokerConstants.BROKER_HOME_ENV);
+        String property = System.getenv(BrokerConstants.BROKER_HOME_ENV);
         if (property == null) {
             throw new IllegalStateException("Environment variable " + BrokerConstants.BROKER_HOME_ENV + " is not set");
         }
