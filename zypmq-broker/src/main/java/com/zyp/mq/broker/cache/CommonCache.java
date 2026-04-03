@@ -7,7 +7,9 @@ import com.zyp.mq.broker.config.TopicInfoProperties;
 import com.zyp.mq.broker.model.TopicModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Date:2026/4/1
@@ -19,7 +21,7 @@ public class CommonCache {
     public static GlobalProperties globalProperties = new GlobalProperties();
     public static TopicInfoProperties topicInfoProperties = new TopicInfoProperties();
 
-    public static List<TopicModel> topicModelList = new ArrayList<>();
+    public static Map<String, TopicModel> topicModelMap = new HashMap<>();
 
 
 }

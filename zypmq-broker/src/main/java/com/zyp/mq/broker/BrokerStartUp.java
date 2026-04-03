@@ -8,6 +8,7 @@ import com.zyp.mq.broker.core.CommitLogAppendHandler;
 import com.zyp.mq.broker.model.TopicModel;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -30,12 +31,9 @@ public class BrokerStartUp  {
         topicInfoLoader.loadProperties();
         commitLogAppendHandler = new CommitLogAppendHandler();
         //这里面存的topic和队列信息。
-        List<TopicModel> topicModelList = CommonCache.topicModelList;
-         for(TopicModel topicModel : topicModelList) {
-             String bathMqHome = CommonCache.globalProperties.getZypMqHome();
-             String brokerPath = BrokerConstants.BROKER_PATH;
-             String filePath = bathMqHome + brokerPath + topicModel.getTopic()+"/00000000";
-             commitLogAppendHandler.prepareMMpLoading(filePath,topicModel.getTopic());
+        Collection<TopicModel> topicModelList = CommonCache.topicModelMap.values();
+        for(TopicModel topicModel : topicModelList) {
+             commitLogAppendHandler.prepareMMpLoading(topicModel.getTopic());
          }
 
     }

@@ -1,6 +1,11 @@
 [
   {
     "topic":"order_cancel_topic",
+    "lastestCommitLog": {
+        "offset": 1111,
+        "offsetLimit": 10,
+        "fileName": "00000000"
+    },
     "topicQueueList": [
       {
         "id": 1,

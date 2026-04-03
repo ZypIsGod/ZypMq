@@ -1,5 +1,8 @@
 package com.zyp.mq.broker.model;
 
+import com.zyp.mq.broker.cache.CommonCache;
+import com.zyp.mq.broker.constants.BrokerConstants;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,7 +25,9 @@ public class MMpFileModel {
     private MappedByteBuffer mappedByteBuffer;
     private FileChannel fileChannel;
 
-    public void loadFileInMMap(String filePath, int startOffset, int mappendSize) throws IOException {
+    public void loadFileInMMap(String topicName, int startOffset, int mappendSize) throws IOException {
+
+        String filePath = getLatestCommitLogFile(topicName);
         file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("file not found: " + filePath);
@@ -31,10 +36,35 @@ public class MMpFileModel {
         mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappendSize);
     }
 
+    private String getLatestCommitLogFile(String topicName) {
+        TopicModel topicModel = CommonCache.topicModelMap.get(topicName);
+        if (topicModel == null) {
+            throw new IllegalStateException("topic not found: " + topicName);
+        }
+        CommitLogModel commitLogModel = topicModel.getCommitLog();
+        long diff = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+        String fileName = null;
+        if (diff == 0) {
+            //写满了
+            fileName = this.createNewCommitLogFile();
+
+        } else if (diff > 0) {
+            fileName = commitLogModel.getFileName();
+        }
+        String bathMqHome = CommonCache.globalProperties.getZypMqHome();
+        String brokerPath = BrokerConstants.BROKER_PATH;
+        return bathMqHome + brokerPath + topicName + "/" + fileName;
+    }
+
+    private String createNewCommitLogFile() {
+
+        return null;
+    }
+
     public byte[] readContent(int readOffset, int size) {
         mappedByteBuffer.position(readOffset);
         byte[] content = new byte[size];
-        for(int i = 0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             content[i] = mappedByteBuffer.get(readOffset + i);
         }
         return content;
@@ -61,6 +91,7 @@ public class MMpFileModel {
             }
         });
     }
+
     private Method method(Object target, String methodName, Class<?>[] args)
             throws NoSuchMethodException {
         try {
@@ -69,6 +100,7 @@ public class MMpFileModel {
             return target.getClass().getDeclaredMethod(methodName, args);
         }
     }
+
     private ByteBuffer viewed(ByteBuffer buffer) {
         String methodName = "viewedBuffer";
         Method[] methods = buffer.getClass().getMethods();
@@ -88,17 +120,22 @@ public class MMpFileModel {
 
 
     public void writeContent(byte[] content) {
-        writeContent(content,false);
+        writeContent(content, false);
     }
 
     public void writeContent(byte[] content, boolean force) {
+
+        ByteBuffer slice = mappedByteBuffer.slice();
+        slice.position(111);
+        //追加写入
+        slice.put(content);
         mappedByteBuffer.put(content);
-        if(force) {
+        if (force) {
             mappedByteBuffer.force();
         }
     }
 
-    public void clear(){
+    public void clear() {
         mappedByteBuffer.clear();
     }
 }

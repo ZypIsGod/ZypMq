@@ -7,6 +7,8 @@ import com.zyp.mq.broker.utils.FileContentReaderUtils;
 import io.netty.util.internal.StringUtil;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Date:2026/4/1
@@ -25,8 +27,11 @@ public class TopicInfoLoader {
         }
         String topicJsonFilePath = bathPath+"/broker/config/ZypMq-topic.json";
         String topicJson = FileContentReaderUtils.readFromFile(topicJsonFilePath);
-
-        CommonCache.topicModelList = JSON.parseArray(topicJson, TopicModel.class);
+        List<TopicModel> topicModels = JSON.parseArray(topicJson, TopicModel.class);
+        CommonCache.topicModelMap = topicModels.stream().collect(Collectors.toMap(TopicModel::getTopic, topicModel -> {
+            CommonCache.topicModelMap.put(topicModel.getTopic(), topicModel);
+            return topicModel;
+        }));
 
     }
 }

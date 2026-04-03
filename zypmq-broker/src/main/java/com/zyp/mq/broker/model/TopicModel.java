@@ -13,6 +13,8 @@ public class TopicModel {
 
     private List<TopicQueueModel> topicQueueList;
 
+    private CommitLogModel commitLog;
+
     private String createAt;
 
     private String updateAt;
@@ -46,6 +48,14 @@ public class TopicModel {
 
     public void setUpdateAt(String updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public CommitLogModel getCommitLog() {
+        return commitLog;
+    }
+
+    public void setCommitLog(CommitLogModel commitLog) {
+        this.commitLog = commitLog;
     }
 
     @Override

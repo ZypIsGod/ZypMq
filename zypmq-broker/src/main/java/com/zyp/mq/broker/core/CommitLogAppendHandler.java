@@ -1,5 +1,7 @@
 package com.zyp.mq.broker.core;
 
+import com.zyp.mq.broker.cache.CommonCache;
+import com.zyp.mq.broker.constants.BrokerConstants;
 import com.zyp.mq.broker.model.MMpFileModel;
 
 import java.io.IOException;
@@ -15,10 +17,11 @@ public class CommitLogAppendHandler {
 
 
 
-    public void prepareMMpLoading(String filePath, String topicName) throws IOException {
+    public void prepareMMpLoading(String topicName) throws IOException {
+
         this.mMpFileModelManager = new MMpFileModelManager();
         MMpFileModel mMpFileModel = new MMpFileModel();
-        mMpFileModel.loadFileInMMap(filePath, 0, 1024 * 1024 * 100);
+        mMpFileModel.loadFileInMMap(topicName, 0, 1024 * 1024 * 100);
         mMpFileModelManager.put(topicName, mMpFileModel);
     }
 
