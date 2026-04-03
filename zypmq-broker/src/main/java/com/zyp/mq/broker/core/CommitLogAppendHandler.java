@@ -9,7 +9,7 @@ import java.io.IOException;
  * @Author：zyp
  * @Description:
  */
-public class MessageAppendHandler {
+public class CommitLogAppendHandler {
 
     private MMpFileModelManager mMpFileModelManager = new MMpFileModelManager();
 
@@ -41,10 +41,10 @@ public class MessageAppendHandler {
 
     public static void main(String[] args) throws IOException {
 
-        MessageAppendHandler messageAppendHandler = new MessageAppendHandler();
-        messageAppendHandler.appendMsg("pay_topic", "hello zyp111");
+        CommitLogAppendHandler commitLogAppendHandler = new CommitLogAppendHandler();
+        commitLogAppendHandler.appendMsg("pay_topic", "hello zyp111");
 
-        String s = messageAppendHandler.readMsg("pay_topic");
+        String s = commitLogAppendHandler.readMsg("pay_topic");
         System.out.println(s);
 
     }
