@@ -1,5 +1,7 @@
 package com.zyp.mq.broker.core;
 
+import com.zyp.mq.broker.model.MMpFileModel;
+
 import java.io.IOException;
 
 /**

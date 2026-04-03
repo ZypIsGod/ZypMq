@@ -34,13 +34,13 @@ public class BrokerStartUp  {
          for(TopicModel topicModel : topicModelList) {
              String bathMqHome = CommonCache.globalProperties.getZypMqHome();
              String brokerPath = BrokerConstants.BROKER_PATH;
-             String filePath = bathMqHome + brokerPath + topicModel.getTopic()+"00000000";
+             String filePath = bathMqHome + brokerPath + topicModel.getTopic()+"/00000000";
              messageAppendHandler.prepareMMpLoading(filePath,topicModel.getTopic());
-
          }
 
     }
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws IOException {
+        BrokerStartUp brokerStartUp = new BrokerStartUp();
+        brokerStartUp.initProperties();
     }
 }
