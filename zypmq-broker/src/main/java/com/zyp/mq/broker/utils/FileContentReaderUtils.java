@@ -1,7 +1,6 @@
 package com.zyp.mq.broker.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.zyp.mq.broker.config.TopicInfo;
 import com.zyp.mq.broker.model.TopicModel;
 
 import java.io.BufferedReader;

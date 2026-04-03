@@ -20,7 +20,7 @@ public class GlobalPropertiesLoader {
             throw new IllegalStateException("Environment variable " + BrokerConstants.BROKER_HOME_ENV + " is not set");
         }
         globalProperties.setZypMqHome(property);
-        CommonCache.globalPropertiesLoader = globalProperties;
+        CommonCache.globalProperties = globalProperties;
     }
 
 
