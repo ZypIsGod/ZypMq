@@ -60,7 +60,16 @@ public class MMpFileModel {
     private String createNewCommitLogFile(String topicName,String oldFileName) {
         String bathMqHome = CommonCache.globalProperties.getZypMqHome();
         String brokerPath = BrokerConstants.BROKER_PATH;
-        return bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
+        String newFilePath =  bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
+
+        File newCommitLogFile = new File(newFilePath);
+        try {
+            newCommitLogFile.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return newFilePath;
     }
 
     public byte[] readContent(int readOffset, int size) {
