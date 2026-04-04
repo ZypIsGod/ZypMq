@@ -2,6 +2,7 @@ package com.zyp.mq.broker.model;
 
 import com.zyp.mq.broker.cache.CommonCache;
 import com.zyp.mq.broker.constants.BrokerConstants;
+import com.zyp.mq.broker.utils.ByteConvertUtils;
 import com.zyp.mq.broker.utils.CommitLogFilenameUtil;
 
 import java.io.File;
@@ -47,7 +48,7 @@ public class MMpFileModel {
         String fileName = null;
         if (diff == 0) {
             //写满了
-            fileName = this.createNewCommitLogFile(topicName,fileName);
+            fileName = this.createNewCommitLogFile(topicName, fileName);
 
         } else if (diff > 0) {
             fileName = commitLogModel.getFileName();
@@ -57,10 +58,10 @@ public class MMpFileModel {
         return bathMqHome + brokerPath + topicName + "/" + fileName;
     }
 
-    private String createNewCommitLogFile(String topicName,String oldFileName) {
+    private String createNewCommitLogFile(String topicName, String oldFileName) {
         String bathMqHome = CommonCache.globalProperties.getZypMqHome();
         String brokerPath = BrokerConstants.BROKER_PATH;
-        String newFilePath =  bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
+        String newFilePath = bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
 
         File newCommitLogFile = new File(newFilePath);
         try {
@@ -130,17 +131,18 @@ public class MMpFileModel {
     }
 
 
-    public void writeContent(byte[] content) {
-        writeContent(content, false);
+    public void writeContent(CommitLogMessageModel commitLogMessageModel) {
+        writeContent(commitLogMessageModel, false);
     }
 
-    public void writeContent(byte[] content, boolean force) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) {
 
         ByteBuffer slice = mappedByteBuffer.slice();
         slice.position(111);
         //追加写入
-        slice.put(content);
-        mappedByteBuffer.put(content);
+/*        slice.put(content);
+        mappedByteBuffer.put(content);*/
+        mappedByteBuffer.put(commitLogMessageModel.convertToByte());
         if (force) {
             mappedByteBuffer.force();
         }

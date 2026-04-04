@@ -42,7 +42,7 @@ public class BrokerStartUp  {
         BrokerStartUp brokerStartUp = new BrokerStartUp();
         brokerStartUp.initProperties();
 
-        commitLogAppendHandler.appendMsg("order_cancel_topic", "hello zyp111");
+        commitLogAppendHandler.appendMsg("order_cancel_topic", "hello zyp111".getBytes());
 
         String s = commitLogAppendHandler.readMsg("order_cancel_topic");
         System.out.println(s);

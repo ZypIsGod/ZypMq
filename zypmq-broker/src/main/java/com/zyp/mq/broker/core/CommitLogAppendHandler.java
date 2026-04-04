@@ -2,6 +2,7 @@ package com.zyp.mq.broker.core;
 
 import com.zyp.mq.broker.cache.CommonCache;
 import com.zyp.mq.broker.constants.BrokerConstants;
+import com.zyp.mq.broker.model.CommitLogMessageModel;
 import com.zyp.mq.broker.model.MMpFileModel;
 
 import java.io.IOException;
@@ -25,12 +26,15 @@ public class CommitLogAppendHandler {
         mMpFileModelManager.put(topicName, mMpFileModel);
     }
 
-    public void appendMsg(String topic, String content) {
+    public void appendMsg(String topic, byte[] content) {
         MMpFileModel mMpFileModel = mMpFileModelManager.get(topic);
         if (mMpFileModel == null) {
             throw new IllegalStateException("topic not exist: " + topic);
         }
-        mMpFileModel.writeContent(content.getBytes());
+        CommitLogMessageModel commitLogMessageModel = new CommitLogMessageModel();
+        commitLogMessageModel.setContent(content);
+        commitLogMessageModel.setSize(content.length);
+        mMpFileModel.writeContent(commitLogMessageModel);
     }
 
     public String readMsg(String topicName){
@@ -45,7 +49,7 @@ public class CommitLogAppendHandler {
     public static void main(String[] args) throws IOException {
 
         CommitLogAppendHandler commitLogAppendHandler = new CommitLogAppendHandler();
-        commitLogAppendHandler.appendMsg("pay_topic", "hello zyp111");
+        commitLogAppendHandler.appendMsg("pay_topic", "hello zyp111".getBytes());
 
         String s = commitLogAppendHandler.readMsg("pay_topic");
         System.out.println(s);
