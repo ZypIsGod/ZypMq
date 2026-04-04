@@ -27,13 +27,21 @@ public class MMpFileModel {
     private MappedByteBuffer mappedByteBuffer;
     private FileChannel fileChannel;
 
-    public void loadFileInMMap(String topicName, int startOffset, int mappendSize) throws IOException {
+    private String topicName;
 
+    public void loadFileInMMap(String topicName, int startOffset, int mappendSize) throws IOException {
+        this.topicName = topicName;
         String filePath = getLatestCommitLogFile(topicName);
+        this.doMMap(filePath, startOffset, mappendSize);
+
+    }
+
+    private void doMMap(String filePath, int startOffset, int mappendSize) throws IOException {
         file = new File(filePath);
         if (!file.exists()) {
             throw new FileNotFoundException("file not found: " + filePath);
         }
+
         fileChannel = new RandomAccessFile(file, "rw").getChannel();
         mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_WRITE, startOffset, mappendSize);
     }
@@ -48,7 +56,7 @@ public class MMpFileModel {
         String fileName = null;
         if (diff == 0) {
             //写满了
-            fileName = this.createNewCommitLogFile(topicName, fileName);
+            fileName = this.createNewCommitLogFile(topicName, commitLogModel);
 
         } else if (diff > 0) {
             fileName = commitLogModel.getFileName();
@@ -58,10 +66,10 @@ public class MMpFileModel {
         return bathMqHome + brokerPath + topicName + "/" + fileName;
     }
 
-    private String createNewCommitLogFile(String topicName, String oldFileName) {
+    private String createNewCommitLogFile(String topicName, CommitLogModel commitLog) {
         String bathMqHome = CommonCache.globalProperties.getZypMqHome();
         String brokerPath = BrokerConstants.BROKER_PATH;
-        String newFilePath = bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(oldFileName);
+        String newFilePath = bathMqHome + brokerPath + topicName + "/" + CommitLogFilenameUtil.buildNewCommitLogFileName(commitLog.getFileName());
 
         File newCommitLogFile = new File(newFilePath);
         try {
@@ -131,20 +139,28 @@ public class MMpFileModel {
     }
 
 
-    public void writeContent(CommitLogMessageModel commitLogMessageModel) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel) throws IOException {
         writeContent(commitLogMessageModel, false);
     }
 
-    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) {
+    public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) throws IOException {
 
-        ByteBuffer slice = mappedByteBuffer.slice();
-        slice.position(111);
-        //追加写入
-/*        slice.put(content);
-        mappedByteBuffer.put(content);*/
+        this.checkCommitLogHasEnoughSpace(commitLogMessageModel);
         mappedByteBuffer.put(commitLogMessageModel.convertToByte());
         if (force) {
             mappedByteBuffer.force();
+        }
+    }
+
+    private void checkCommitLogHasEnoughSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
+        TopicModel topicModel = CommonCache.topicModelMap.get(this.topicName);
+        CommitLogModel commitLog = topicModel.getCommitLog();
+        long writeAbleOffsetNum = commitLog.getOffsetLimit() - commitLog.getOffset();
+        if (!(writeAbleOffsetNum >= commitLogMessageModel.getSize())) {
+            //创建新的commitLog文件
+            String newCommitLogFile = this.createNewCommitLogFile(this.topicName, commitLog);
+
+            this.doMMap(newCommitLogFile, 0, BrokerConstants.COMMIT_LOG_FILE_SIZE);
         }
     }
 

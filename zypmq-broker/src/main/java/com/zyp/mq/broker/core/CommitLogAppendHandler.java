@@ -26,7 +26,7 @@ public class CommitLogAppendHandler {
         mMpFileModelManager.put(topicName, mMpFileModel);
     }
 
-    public void appendMsg(String topic, byte[] content) {
+    public void appendMsg(String topic, byte[] content) throws IOException {
         MMpFileModel mMpFileModel = mMpFileModelManager.get(topic);
         if (mMpFileModel == null) {
             throw new IllegalStateException("topic not exist: " + topic);
@@ -34,6 +34,7 @@ public class CommitLogAppendHandler {
         CommitLogMessageModel commitLogMessageModel = new CommitLogMessageModel();
         commitLogMessageModel.setContent(content);
         commitLogMessageModel.setSize(content.length);
+
         mMpFileModel.writeContent(commitLogMessageModel);
     }
 

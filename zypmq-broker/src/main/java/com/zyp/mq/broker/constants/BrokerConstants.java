@@ -10,4 +10,6 @@ public class BrokerConstants {
     public static final String BROKER_HOME_ENV = "ZYP_MQ_HOME";
 
     public static final String BROKER_PATH = "/broker/store/";
+
+    public static final Integer COMMIT_LOG_FILE_SIZE = 1 * 1024 * 1024;
 }
