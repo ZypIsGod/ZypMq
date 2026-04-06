@@ -6,6 +6,7 @@ import com.zyp.mq.broker.model.TopicModel;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @Author：zyp
  * @Description:
  */
-public class FileContentReaderUtils {
+public class FileContentUtils {
 
     public static String readFromFile(String path) {
         try( BufferedReader in = new BufferedReader(new FileReader(path))) {
@@ -25,6 +26,14 @@ public class FileContentReaderUtils {
             return stb.toString();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void overWriteToFile(String path,String content) {
+        try(FileWriter fileWriter = new FileWriter(path)) {
+            fileWriter.write(content);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
