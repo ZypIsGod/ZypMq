@@ -30,10 +30,7 @@ public class TopicInfoLoader {
         String topicJsonFilePath = bathPath+"/broker/config/ZypMq-topic.json";
         String topicJson = FileContentReaderUtils.readFromFile(topicJsonFilePath);
         List<TopicModel> topicModels = JSON.parseArray(topicJson, TopicModel.class);
-        CommonCache.topicModelMap = topicModels.stream().collect(Collectors.toMap(TopicModel::getTopic, topicModel -> {
-            CommonCache.topicModelMap.put(topicModel.getTopic(), topicModel);
-            return topicModel;
-        }));
+        CommonCache.setTopicModelLis(topicModels);
 
     }
     /**
@@ -46,7 +43,7 @@ public class TopicInfoLoader {
                 do {
                     try {
                         TimeUnit.SECONDS.sleep(BrokerConstants.DEFAULT_REFRESH_MQ_TOPIC_TIME_STEP);
-                        Map<String, TopicModel> topicModelMap = CommonCache.topicModelMap;
+                        Map<String, TopicModel> topicModelMap = CommonCache.getTopicModelMap();
                         List<TopicModel> topicModelList = topicModelMap.values().stream().collect(Collectors.toList());
 
                     }catch (InterruptedException e) {

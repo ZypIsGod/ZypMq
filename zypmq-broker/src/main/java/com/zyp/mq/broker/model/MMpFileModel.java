@@ -47,7 +47,7 @@ public class MMpFileModel {
     }
 
     private String getLatestCommitLogFile(String topicName) {
-        TopicModel topicModel = CommonCache.topicModelMap.get(topicName);
+        TopicModel topicModel = CommonCache.getTopicModelMap().get(topicName);
         if (topicModel == null) {
             throw new IllegalStateException("topic not found: " + topicName);
         }
@@ -153,7 +153,7 @@ public class MMpFileModel {
     }
 
     private void checkCommitLogHasEnoughSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
-        TopicModel topicModel = CommonCache.topicModelMap.get(this.topicName);
+        TopicModel topicModel = CommonCache.getTopicModelMap().get(this.topicName);
         CommitLogModel commitLog = topicModel.getCommitLog();
         long writeAbleOffsetNum = commitLog.getOffsetLimit() - commitLog.getOffset();
         if (!(writeAbleOffsetNum >= commitLogMessageModel.getSize())) {
