@@ -28,6 +28,7 @@ public class TopicInfoLoader {
         String topicJsonFilePath = bathPath + "/broker/config/ZypMq-topic.json";
         String topicJson = FileContentUtils.readFromFile(topicJsonFilePath);
         List<TopicModel> topicModels = JSON.parseArray(topicJson, TopicModel.class);
+        this.filePath = topicJsonFilePath;
         CommonCache.setTopicModelLis(topicModels);
 
     }
