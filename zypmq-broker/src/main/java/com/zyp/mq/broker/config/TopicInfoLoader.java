@@ -2,12 +2,14 @@ package com.zyp.mq.broker.config;
 
 import com.alibaba.fastjson.JSON;
 import com.zyp.mq.broker.cache.CommonCache;
+import com.zyp.mq.broker.constants.BrokerConstants;
 import com.zyp.mq.broker.model.TopicModel;
 import com.zyp.mq.broker.utils.FileContentReaderUtils;
 import io.netty.util.internal.StringUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -33,5 +35,24 @@ public class TopicInfoLoader {
             return topicModel;
         }));
 
+    }
+    /**
+     * 开启一个刷新内存到磁盘的任务
+     */
+    public void startRefreshMqTopInfoTask() {
+        CommonThreadPoolConfig.refreshZypMqTopicExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                do {
+                    try {
+                        TimeUnit.SECONDS.sleep(BrokerConstants.DEFAULT_REFRESH_MQ_TOPIC_TIME_STEP);
+
+                    }catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }while (true);
+            }
+        });
     }
 }

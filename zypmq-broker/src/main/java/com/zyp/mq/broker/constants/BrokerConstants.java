@@ -12,4 +12,6 @@ public class BrokerConstants {
     public static final String BROKER_PATH = "/broker/store/";
 
     public static final Integer COMMIT_LOG_FILE_SIZE = 1 * 1024 * 1024;
+
+    public static final Integer DEFAULT_REFRESH_MQ_TOPIC_TIME_STEP = 10;
 }

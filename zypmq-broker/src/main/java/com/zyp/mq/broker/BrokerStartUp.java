@@ -29,6 +29,7 @@ public class BrokerStartUp  {
         globalPropertiesLoader.loadProperties();
         topicInfoLoader = new TopicInfoLoader();
         topicInfoLoader.loadProperties();
+        topicInfoLoader.startRefreshMqTopInfoTask();
         commitLogAppendHandler = new CommitLogAppendHandler();
         //这里面存的topic和队列信息。
         Collection<TopicModel> topicModelList = CommonCache.topicModelMap.values();
