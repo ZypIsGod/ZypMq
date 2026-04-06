@@ -46,6 +46,8 @@ public class TopicInfoLoader {
                 do {
                     try {
                         TimeUnit.SECONDS.sleep(BrokerConstants.DEFAULT_REFRESH_MQ_TOPIC_TIME_STEP);
+                        Map<String, TopicModel> topicModelMap = CommonCache.topicModelMap;
+                        List<TopicModel> topicModelList = topicModelMap.values().stream().collect(Collectors.toList());
 
                     }catch (InterruptedException e) {
                         throw new RuntimeException(e);
