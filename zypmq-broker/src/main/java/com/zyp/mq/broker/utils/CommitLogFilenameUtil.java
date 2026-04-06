@@ -1,5 +1,8 @@
 package com.zyp.mq.broker.utils;
 
+import com.zyp.mq.broker.cache.CommonCache;
+import com.zyp.mq.broker.constants.BrokerConstants;
+
 /**
  * @Date:2026/4/3
  * @Author：zyp
@@ -36,6 +39,12 @@ public class CommitLogFilenameUtil {
         }
         stringBuffer.append(newFileName);
         return stringBuffer.toString();
+    }
+
+    public static String builCommitLogFilePath(String topicName, String newFileName){
+        String bathMqHome = CommonCache.globalProperties.getZypMqHome();
+        String brokerPath = BrokerConstants.BROKER_PATH;
+        return bathMqHome + brokerPath + topicName + "/" + newFileName;
     }
 
     public static void main(String[] args) {
