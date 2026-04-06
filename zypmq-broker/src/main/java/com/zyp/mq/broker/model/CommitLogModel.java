@@ -1,5 +1,7 @@
 package com.zyp.mq.broker.model;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * @Date:2026/4/3
  * @Author：zyp
@@ -9,15 +11,15 @@ public class CommitLogModel {
 
     private String fileName;
 
-    private Long offset;
+    private AtomicLong offset;
 
-    private Long offsetLimit;
+    private AtomicLong offsetLimit;
 
-    public Long getOffsetLimit() {
+    public AtomicLong getOffsetLimit() {
         return offsetLimit;
     }
 
-    public void setOffsetLimit(Long offsetLimit) {
+    public void setOffsetLimit(AtomicLong offsetLimit) {
         this.offsetLimit = offsetLimit;
     }
 
@@ -29,11 +31,15 @@ public class CommitLogModel {
         this.fileName = fileName;
     }
 
-    public Long getOffset() {
+    public AtomicLong getOffset() {
         return offset;
     }
 
-    public void setOffset(Long offset) {
+    public void setOffset(AtomicLong offset) {
         this.offset = offset;
+    }
+
+    public Long countDiff(){
+        return this.getOffsetLimit().get() - this.getOffset().get();
     }
 }

@@ -52,7 +52,7 @@ public class MMpFileModel {
             throw new IllegalStateException("topic not found: " + topicName);
         }
         CommitLogModel commitLogModel = topicModel.getCommitLog();
-        long diff = commitLogModel.getOffsetLimit() - commitLogModel.getOffset();
+        long diff = commitLogModel.countDiff();
         String fileName = null;
         if (diff == 0) {
             //写满了
@@ -144,9 +144,18 @@ public class MMpFileModel {
     }
 
     public void writeContent(CommitLogMessageModel commitLogMessageModel, boolean force) throws IOException {
-
+        TopicModel topicModel = CommonCache.getTopicModelMap().get(topicName);
+        if(topicModel == null) {
+            throw new IllegalStateException("topic not found: " + topicName);
+        }
+        CommitLogModel commitLog = topicModel.getCommitLog();
+        if(commitLog == null) {
+            throw new IllegalStateException("commit log not found for topic: " + topicName);
+        }
         this.checkCommitLogHasEnoughSpace(commitLogMessageModel);
         mappedByteBuffer.put(commitLogMessageModel.convertToByte());
+        commitLog.getOffset().addAndGet(commitLogMessageModel.getSize());
+
         if (force) {
             mappedByteBuffer.force();
         }
@@ -155,7 +164,7 @@ public class MMpFileModel {
     private void checkCommitLogHasEnoughSpace(CommitLogMessageModel commitLogMessageModel) throws IOException {
         TopicModel topicModel = CommonCache.getTopicModelMap().get(this.topicName);
         CommitLogModel commitLog = topicModel.getCommitLog();
-        long writeAbleOffsetNum = commitLog.getOffsetLimit() - commitLog.getOffset();
+        long writeAbleOffsetNum = commitLog.countDiff();
         if (!(writeAbleOffsetNum >= commitLogMessageModel.getSize())) {
             //创建新的commitLog文件
             String newCommitLogFile = this.createNewCommitLogFile(this.topicName, commitLog);

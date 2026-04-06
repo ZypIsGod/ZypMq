@@ -1,7 +1,7 @@
 [
   {
     "topic":"order_cancel_topic",
-    "lastestCommitLog": {
+    "commitLog": {
         "offset": 1111,
         "offsetLimit": 10,
         "fileName": "00000000"
